@@ -83,7 +83,6 @@ namespace RandyWinFormsApp1
             // 
             // buttonGuess
             // 
-            buttonGuess.Location = new Point(175, 92);
             buttonGuess.Enabled = false;
             buttonGuess.Name = "buttonGuess";
             buttonGuess.Size = new Size(54, 29);
