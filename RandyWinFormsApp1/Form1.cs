@@ -1,4 +1,6 @@
-using Dapper;
+Ôªøusing Dapper;
+using System.ComponentModel;
+using System.Data;
 using System.Data.SqlClient;
 
 namespace RandyWinFormsApp1
@@ -6,13 +8,18 @@ namespace RandyWinFormsApp1
 
     public partial class Form1 : Form
     {
-        private int[] ans = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };//•øΩTµ™Æ◊
-        private String[] gnum = new string[10];//≤q™∫µ™Æ◊º∆¶r
+        public string ConnString { get; set; }
+        private DataTable itemsDataTable = new DataTable();
+        public string Sqlstr = @"Server=localhost;Database=master;User Id=SYSADM;Password=SYSADM";
+        private int[] ans = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };//Ê≠£Á¢∫Á≠îÊ°à
+        private String[] gnum = new string[10];//ÁåúÁöÑÁ≠îÊ°àÊï∏Â≠ó
         private int tmp, r, time;
         private Random ran = new Random();
         public Form1()
         {
             InitializeComponent();
+            dataGridView1.CellDoubleClick += DataGridView1_CellDoubleClick;
+            Query();
 
         }
 
@@ -49,7 +56,7 @@ namespace RandyWinFormsApp1
             int a = 0, b = 0;
             if (textBoxInput.TextLength != 4)
             {
-                MessageBox.Show("Ω–øÈ§J4≠”§£§@ºÀ™∫º∆¶r");
+                MessageBox.Show("Ë´ãËº∏ÂÖ•4ÂÄã‰∏ç‰∏ÄÊ®£ÁöÑÊï∏Â≠ó");
             }
             else
             {
@@ -62,7 +69,7 @@ namespace RandyWinFormsApp1
                 gnum[1] == gnum[4] || gnum[2] == gnum[3] ||
                 gnum[2] == gnum[4] || gnum[3] == gnum[4]))
                 {
-                    MessageBox.Show("§£Ø‡øÈ§J≠´Ω∆™∫º∆¶rÆ@");
+                    MessageBox.Show("‰∏çËÉΩËº∏ÂÖ•ÈáçË§áÁöÑÊï∏Â≠óÂì¶");
                 }
                 else
                 {
@@ -84,18 +91,18 @@ namespace RandyWinFormsApp1
                         }
                     }
                     textBoxResult.Text += time + "---------" + num + "----------" + a.ToString() + "A" + b.ToString() + "B" + "\r\n";
-                    //label3.Text = "≤ƒ" + (listBoxResult.Lines.Length - 1) + "≤q";
+                    //label3.Text = "Á¨¨" + (listBoxResult.Lines.Length - 1) + "Áåú";
                     textBoxInput.Focus();
                     textBoxInput.SelectAll();
                 }
                 if (a == 4 && b == 0)
                 {
-                    MessageBox.Show("Æ•≥ﬂßA≤qπÔ§F");
+                    MessageBox.Show("ÊÅ≠Âñú‰Ω†ÁåúÂ∞ç‰∫Ü");
                     textBoxInput.Enabled = false;
                 }
                 else if (textBoxResult.Lines.Length == 11)
                 {
-                    MessageBox.Show("ßA≠n¶A•[™o§F");
+                    MessageBox.Show("‰Ω†Ë¶ÅÂÜçÂä†Ê≤π‰∫Ü");
                     textBoxInput.Enabled = false;
                 }
             }
@@ -116,43 +123,57 @@ namespace RandyWinFormsApp1
 
         private void buttonConnect_Click(object sender, EventArgs e)
         {
-            //¥˙∏’¨Oß_•i•H≥sΩu®Ï∏ÍÆ∆Æw
-            SqlConnection conn = new SqlConnection();
-            conn.ConnectionString = @"
-                        Server=localhost;
-                        Database=master;
-                        user Id=SYSADM;
-                        Password=SYSADM";
-            itemsService.ConnString = conn.ConnectionString;
+            //Ê∏¨Ë©¶ÊòØÂê¶ÂèØ‰ª•ÈÄ£Á∑öÂà∞Ë≥áÊñôÂ∫´
+            //SqlConnection conn = new SqlConnection();
+            //conn.ConnectionString = @"
+            //            Server=192.168.1.9;
+            //            Database=_SmartManTest;
+            //            user Id=SYSADM;
+            //            Password=SYSADM";
             //itemsService.ConnString = conn.ConnectionString;
-
-            conn.Open();
-            MessageBox.Show("≥sΩu¶®•\");
-            conn.Close();
+            //conn.Open();
+            //MessageBox.Show("ÈÄ£Á∑öÊàêÂäü");
+            Query();
+            //conn.Close();
             //
         }
-
-        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        public void Query()
         {
+            itemsDataTable.Clear();
+            itemsDataTable.DefaultView.RowFilter = string.Empty;
+            itemsDataTable.DefaultView.Sort = string.Empty;
+            //SearchBox.Text = string.Empty;
+            using (SqlConnection conn = new SqlConnection(Sqlstr))
+            {
+                conn.Open();
+                using (var reader = conn.ExecuteReader("Select * From Items"))
+                {
+                    itemsDataTable.Load(reader);
+                    dataGridView1.DataSource = itemsDataTable;
+                    dataGridView1.AllowUserToAddRows = false;
+
+                }
+            }
 
         }
 
         private void buttonSelect_Click(object sender, EventArgs e)
         {
-            SqlConnection conn = new SqlConnection();
-            conn.ConnectionString = itemsService.ConnString;
-            itemsService.ConnString = conn.ConnectionString;
-            conn.Open();
-            List<Employee> employees = new List<Employee>();
-            employees = conn.Query<Employee>("Select * From items").ToList();
-            conn.Close();
-            dataGridView1.DataSource = employees;
-            // set so whole row is selected ≈˝æ„¶Ê≥QøÔ®˙
-            dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            // can only select one row at a time §£•i•H¶høÔ
-            dataGridView1.MultiSelect = false;
-            // read only
-            dataGridView1.ReadOnly = true;
+            //SqlConnection conn = new SqlConnection();
+            //conn.ConnectionString = itemsService.ConnString;
+            //itemsService.ConnString = conn.ConnectionString;
+            //conn.Open();
+            //List<Employee> employees = new List<Employee>();
+            //employees = conn.Query<Employee>("Select * From items").ToList();
+            //conn.Close();
+            //dataGridView1.DataSource = employees;
+            //// set so whole row is selected ËÆìÊï¥Ë°åË¢´ÈÅ∏Âèñ
+            //dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            //// can only select one row at a time ‰∏çÂèØ‰ª•Â§öÈÅ∏
+            //dataGridView1.MultiSelect = false;
+            //// read only
+            //dataGridView1.ReadOnly = true;
+            Query();
         }
 
         private void tabPageGuessNumber_Click(object sender, EventArgs e)
@@ -165,7 +186,7 @@ namespace RandyWinFormsApp1
             // check if a row is selected
             bool isSelected = dataGridView1.SelectedRows.Count > 0;
             // get the Employee data from row
-            // ß‚≠˚§u∏ÍÆ∆ßÏ•X®”
+            // ÊääÂì°Â∑•Ë≥áÊñôÊäìÂá∫‰æÜ
             Employee employee = new Employee();
             if (isSelected)
             {
@@ -178,7 +199,7 @@ namespace RandyWinFormsApp1
             }
             else
             {
-                MessageBox.Show("Ω–øÔæ‹§@•Û™´´~");
+                MessageBox.Show("Ë´ãÈÅ∏Êìá‰∏Ä‰ª∂Áâ©ÂìÅ");
                 return;
             }
             FormUpdate formUpdate = new FormUpdate(employee);
@@ -189,24 +210,24 @@ namespace RandyWinFormsApp1
         {
             // check if a row is selected
             bool isSelected = dataGridView1.SelectedRows.Count > 0;
-            // ¿À¨d¶≥®S¶≥øÔ§@¶Ê∏ÍÆ∆¶C
+            // Ê™¢Êü•ÊúâÊ≤íÊúâÈÅ∏‰∏ÄË°åË≥áÊñôÂàó
             if (isSelected == false)
             {
-                MessageBox.Show("Ω–øÔæ‹§@∂µ™´´~");
+                MessageBox.Show("Ë´ãÈÅ∏Êìá‰∏ÄÈ†ÖÁâ©ÂìÅ");
                 return;
             }
             string id = dataGridView1.SelectedRows[0].Cells["id"].Value.ToString();
             string Name = dataGridView1.SelectedRows[0].Cells["Name"].Value.ToString();
-            // ∏ı∞TÆßΩT©w¨Oß_≠nßR∞£
-            var result = MessageBox.Show("ΩT©w≠nßR∞£ Ωs∏π" + id + " " + Name + "∂‹?", "ßR∞£™´´~", MessageBoxButtons.YesNo);
-            // ¶p™GøÔNO¥Nµ≤ßÙ
+            // Ë∑≥Ë®äÊÅØÁ¢∫ÂÆöÊòØÂê¶Ë¶ÅÂà™Èô§
+            var result = MessageBox.Show("Á¢∫ÂÆöË¶ÅÂà™Èô§ Á∑®Ëôü" + id + " " + Name + "Âóé?", "Âà™Èô§Áâ©ÂìÅ", MessageBoxButtons.YesNo);
+            // Â¶ÇÊûúÈÅ∏NOÂ∞±ÁµêÊùü
             if (result == DialogResult.No)
             {
                 return;
             }
             SqlConnection conn = new SqlConnection(itemsService.ConnString);
             conn.Execute("Delete From items Where id = @id", new { id });
-            MessageBox.Show("ßR∞£¶®•\");
+            MessageBox.Show("Âà™Èô§ÊàêÂäü");
             conn.Close();
         }
 
@@ -215,6 +236,52 @@ namespace RandyWinFormsApp1
             Employee employee = new Employee();
             FormInsert formInsert = new FormInsert(employee);
             formInsert.ShowDialog();
+        }
+
+        private void textBoxIndex_TextChanged(object sender, EventArgs e)
+        {
+            string indexfilter = textBoxIndex.Text;
+
+            if (string.IsNullOrEmpty(indexfilter))
+            {
+                // Â¶ÇÊûúÊêúÂ∞ãÊ°ÜÊòØÁ©∫ÁöÑÔºåÈ°ØÁ§∫ÊâÄÊúâË≥áÊñô
+                (dataGridView1.DataSource as DataTable).DefaultView.RowFilter = string.Empty;
+            }
+            else
+            {
+                // Ê†πÊìöËº∏ÂÖ•ÂÖßÂÆπÈÄ≤Ë°åÊ¢ù‰ª∂ÊêúÂ∞ã
+                string filterExpression = $"Name LIKE '%{indexfilter}%' OR Type LIKE '%{indexfilter}%' OR Description LIKE '%{indexfilter}%'";
+                (dataGridView1.DataSource as DataTable).DefaultView.RowFilter = filterExpression;
+            }
+        }
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
+        private void DataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            // check if a row is selected
+            bool isSelected = dataGridView1.SelectedRows.Count > 0;
+            // get the Employee data from row
+            // ÊääÂì°Â∑•Ë≥áÊñôÊäìÂá∫‰æÜ
+            Employee employee = new Employee();
+            if (isSelected)
+            {
+                employee.Id = dataGridView1.SelectedRows[0].Cells["Id"].Value.ToString();
+                employee.Name = dataGridView1.SelectedRows[0].Cells["Name"].Value.ToString();
+                employee.Description = dataGridView1.SelectedRows[0].Cells["Description"].Value.ToString();
+                employee.MarketValue = dataGridView1.SelectedRows[0].Cells["MarketValue"].Value.ToString();
+                employee.Quantity = dataGridView1.SelectedRows[0].Cells["Quantity"].Value.ToString();
+                employee.Type = dataGridView1.SelectedRows[0].Cells["Type"].Value.ToString();
+            }
+            else
+            {
+                MessageBox.Show("Ë´ãÈÅ∏Êìá‰∏Ä‰ª∂Áâ©ÂìÅ");
+                return;
+            }
+            FormUpdate formUpdate = new FormUpdate(employee);
+            formUpdate.ShowDialog();
         }
     }
 }

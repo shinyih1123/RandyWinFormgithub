@@ -47,12 +47,18 @@ namespace RandyWinFormsApp1
             buttonUpdate = new Button();
             tabControl = new TabControl();
             tabPageBox = new TabPage();
+            tableLayoutPanel1 = new TableLayoutPanel();
+            flowLayoutPanel1 = new FlowLayoutPanel();
+            label2 = new Label();
+            textBoxIndex = new TextBox();
             buttonInsert = new Button();
             buttonDelete = new Button();
             tabPageGuessNumber = new TabPage();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             tabControl.SuspendLayout();
             tabPageBox.SuspendLayout();
+            tableLayoutPanel1.SuspendLayout();
+            flowLayoutPanel1.SuspendLayout();
             tabPageGuessNumber.SuspendLayout();
             SuspendLayout();
             // 
@@ -163,7 +169,7 @@ namespace RandyWinFormsApp1
             // 
             // buttonConnect
             // 
-            buttonConnect.Location = new Point(18, 15);
+            buttonConnect.Location = new Point(21, 15);
             buttonConnect.Name = "buttonConnect";
             buttonConnect.Size = new Size(112, 46);
             buttonConnect.TabIndex = 12;
@@ -174,10 +180,11 @@ namespace RandyWinFormsApp1
             // dataGridView1
             // 
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Location = new Point(18, 73);
+            dataGridView1.Location = new Point(3, 44);
             dataGridView1.Name = "dataGridView1";
             dataGridView1.RowHeadersWidth = 51;
-            dataGridView1.Size = new Size(757, 389);
+            dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dataGridView1.Size = new Size(751, 360);
             dataGridView1.TabIndex = 13;
             // 
             // buttonSelect
@@ -213,10 +220,10 @@ namespace RandyWinFormsApp1
             // tabPageBox
             // 
             tabPageBox.Controls.Add(buttonInsert);
-            tabPageBox.Controls.Add(buttonDelete);
+            tabPageBox.Controls.Add(tableLayoutPanel1);
             tabPageBox.Controls.Add(buttonConnect);
+            tabPageBox.Controls.Add(buttonDelete);
             tabPageBox.Controls.Add(buttonUpdate);
-            tabPageBox.Controls.Add(dataGridView1);
             tabPageBox.Controls.Add(buttonSelect);
             tabPageBox.Location = new Point(4, 28);
             tabPageBox.Name = "tabPageBox";
@@ -225,6 +232,52 @@ namespace RandyWinFormsApp1
             tabPageBox.TabIndex = 0;
             tabPageBox.Text = "勇者物品";
             tabPageBox.UseVisualStyleBackColor = true;
+            // 
+            // tableLayoutPanel1
+            // 
+            tableLayoutPanel1.ColumnCount = 1;
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20F));
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20F));
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20F));
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20F));
+            tableLayoutPanel1.Controls.Add(flowLayoutPanel1, 0, 0);
+            tableLayoutPanel1.Controls.Add(dataGridView1, 0, 1);
+            tableLayoutPanel1.Location = new Point(18, 70);
+            tableLayoutPanel1.Name = "tableLayoutPanel1";
+            tableLayoutPanel1.RowCount = 2;
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 10.07371F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 89.92629F));
+            tableLayoutPanel1.Size = new Size(757, 407);
+            tableLayoutPanel1.TabIndex = 18;
+            // 
+            // flowLayoutPanel1
+            // 
+            flowLayoutPanel1.Controls.Add(label2);
+            flowLayoutPanel1.Controls.Add(textBoxIndex);
+            flowLayoutPanel1.Location = new Point(3, 3);
+            flowLayoutPanel1.Name = "flowLayoutPanel1";
+            flowLayoutPanel1.Size = new Size(751, 35);
+            flowLayoutPanel1.TabIndex = 19;
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Location = new Point(3, 0);
+            label2.Name = "label2";
+            label2.Size = new Size(39, 19);
+            label2.TabIndex = 15;
+            label2.Text = "索引";
+            label2.Click += label2_Click;
+            // 
+            // textBoxIndex
+            // 
+            textBoxIndex.Location = new Point(48, 3);
+            textBoxIndex.Name = "textBoxIndex";
+            textBoxIndex.Size = new Size(532, 27);
+            textBoxIndex.TabIndex = 14;
+            textBoxIndex.TextChanged += textBoxIndex_TextChanged;
             // 
             // buttonInsert
             // 
@@ -279,6 +332,9 @@ namespace RandyWinFormsApp1
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             tabControl.ResumeLayout(false);
             tabPageBox.ResumeLayout(false);
+            tableLayoutPanel1.ResumeLayout(false);
+            flowLayoutPanel1.ResumeLayout(false);
+            flowLayoutPanel1.PerformLayout();
             tabPageGuessNumber.ResumeLayout(false);
             tabPageGuessNumber.PerformLayout();
             ResumeLayout(false);
@@ -306,5 +362,9 @@ namespace RandyWinFormsApp1
         private TabPage tabPageGuessNumber;
         private Button buttonInsert;
         private Button buttonDelete;
+        private TableLayoutPanel tableLayoutPanel1;
+        private TextBox textBoxIndex;
+        private FlowLayoutPanel flowLayoutPanel1;
+        private Label label2;
     }
 }
