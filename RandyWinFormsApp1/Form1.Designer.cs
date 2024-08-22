@@ -47,11 +47,13 @@ namespace RandyWinFormsApp1
             buttonUpdate = new Button();
             tabControl = new TabControl();
             tabPageBox = new TabPage();
+            buttonUnLoadCSV = new Button();
+            buttonLoadCSV = new Button();
+            buttonInsert = new Button();
             tableLayoutPanel1 = new TableLayoutPanel();
             flowLayoutPanel1 = new FlowLayoutPanel();
             label2 = new Label();
             textBoxIndex = new TextBox();
-            buttonInsert = new Button();
             buttonDelete = new Button();
             tabPageGuessNumber = new TabPage();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
@@ -184,8 +186,10 @@ namespace RandyWinFormsApp1
             dataGridView1.Name = "dataGridView1";
             dataGridView1.RowHeadersWidth = 51;
             dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dataGridView1.Size = new Size(751, 360);
+            dataGridView1.Size = new Size(885, 360);
             dataGridView1.TabIndex = 13;
+            dataGridView1.CellClick += DataGridView1_CellDoubleClick;
+            dataGridView1.CellContentClick += dataGridView1_CellContentClick;
             // 
             // buttonSelect
             // 
@@ -214,11 +218,13 @@ namespace RandyWinFormsApp1
             tabControl.Location = new Point(12, 14);
             tabControl.Name = "tabControl";
             tabControl.SelectedIndex = 0;
-            tabControl.Size = new Size(805, 512);
+            tabControl.Size = new Size(923, 512);
             tabControl.TabIndex = 16;
             // 
             // tabPageBox
             // 
+            tabPageBox.Controls.Add(buttonUnLoadCSV);
+            tabPageBox.Controls.Add(buttonLoadCSV);
             tabPageBox.Controls.Add(buttonInsert);
             tabPageBox.Controls.Add(tableLayoutPanel1);
             tabPageBox.Controls.Add(buttonConnect);
@@ -228,10 +234,40 @@ namespace RandyWinFormsApp1
             tabPageBox.Location = new Point(4, 28);
             tabPageBox.Name = "tabPageBox";
             tabPageBox.Padding = new Padding(3);
-            tabPageBox.Size = new Size(797, 480);
+            tabPageBox.Size = new Size(915, 480);
             tabPageBox.TabIndex = 0;
             tabPageBox.Text = "勇者物品";
             tabPageBox.UseVisualStyleBackColor = true;
+            // 
+            // buttonUnLoadCSV
+            // 
+            buttonUnLoadCSV.Location = new Point(726, 15);
+            buttonUnLoadCSV.Name = "buttonUnLoadCSV";
+            buttonUnLoadCSV.Size = new Size(113, 46);
+            buttonUnLoadCSV.TabIndex = 20;
+            buttonUnLoadCSV.Text = "匯出CSV";
+            buttonUnLoadCSV.UseVisualStyleBackColor = true;
+            buttonUnLoadCSV.Click += buttonUnLoadCSV_Click;
+            // 
+            // buttonLoadCSV
+            // 
+            buttonLoadCSV.Location = new Point(607, 15);
+            buttonLoadCSV.Name = "buttonLoadCSV";
+            buttonLoadCSV.Size = new Size(113, 46);
+            buttonLoadCSV.TabIndex = 19;
+            buttonLoadCSV.Text = "匯入CSV";
+            buttonLoadCSV.UseVisualStyleBackColor = true;
+            buttonLoadCSV.Click += buttonLoadCSV_Click;
+            // 
+            // buttonInsert
+            // 
+            buttonInsert.Location = new Point(253, 15);
+            buttonInsert.Name = "buttonInsert";
+            buttonInsert.Size = new Size(113, 46);
+            buttonInsert.TabIndex = 17;
+            buttonInsert.Text = "新增";
+            buttonInsert.UseVisualStyleBackColor = true;
+            buttonInsert.Click += buttonInsert_Click;
             // 
             // tableLayoutPanel1
             // 
@@ -249,7 +285,7 @@ namespace RandyWinFormsApp1
             tableLayoutPanel1.RowCount = 2;
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 10.07371F));
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 89.92629F));
-            tableLayoutPanel1.Size = new Size(757, 407);
+            tableLayoutPanel1.Size = new Size(891, 407);
             tableLayoutPanel1.TabIndex = 18;
             // 
             // flowLayoutPanel1
@@ -258,7 +294,7 @@ namespace RandyWinFormsApp1
             flowLayoutPanel1.Controls.Add(textBoxIndex);
             flowLayoutPanel1.Location = new Point(3, 3);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Size = new Size(751, 35);
+            flowLayoutPanel1.Size = new Size(885, 35);
             flowLayoutPanel1.TabIndex = 19;
             // 
             // label2
@@ -278,16 +314,6 @@ namespace RandyWinFormsApp1
             textBoxIndex.Size = new Size(532, 27);
             textBoxIndex.TabIndex = 14;
             textBoxIndex.TextChanged += textBoxIndex_TextChanged;
-            // 
-            // buttonInsert
-            // 
-            buttonInsert.Location = new Point(253, 15);
-            buttonInsert.Name = "buttonInsert";
-            buttonInsert.Size = new Size(113, 46);
-            buttonInsert.TabIndex = 17;
-            buttonInsert.Text = "新增";
-            buttonInsert.UseVisualStyleBackColor = true;
-            buttonInsert.Click += buttonInsert_Click;
             // 
             // buttonDelete
             // 
@@ -315,7 +341,7 @@ namespace RandyWinFormsApp1
             tabPageGuessNumber.Location = new Point(4, 28);
             tabPageGuessNumber.Name = "tabPageGuessNumber";
             tabPageGuessNumber.Padding = new Padding(3);
-            tabPageGuessNumber.Size = new Size(797, 480);
+            tabPageGuessNumber.Size = new Size(915, 480);
             tabPageGuessNumber.TabIndex = 1;
             tabPageGuessNumber.Text = "猜數字";
             tabPageGuessNumber.UseVisualStyleBackColor = true;
@@ -325,10 +351,11 @@ namespace RandyWinFormsApp1
             // 
             AutoScaleDimensions = new SizeF(9F, 19F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(829, 557);
+            ClientSize = new Size(1055, 581);
             Controls.Add(tabControl);
             Name = "Form1";
             Text = "勇者物品WinForms";
+            WindowState = FormWindowState.Maximized;
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             tabControl.ResumeLayout(false);
             tabPageBox.ResumeLayout(false);
@@ -366,5 +393,7 @@ namespace RandyWinFormsApp1
         private TextBox textBoxIndex;
         private FlowLayoutPanel flowLayoutPanel1;
         private Label label2;
+        private Button buttonLoadCSV;
+        private Button buttonUnLoadCSV;
     }
 }
