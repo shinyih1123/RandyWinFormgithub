@@ -60,7 +60,7 @@
             // 
             textBoxURL.Location = new Point(91, 25);
             textBoxURL.Name = "textBoxURL";
-            textBoxURL.Size = new Size(553, 27);
+            textBoxURL.Size = new Size(1275, 27);
             textBoxURL.TabIndex = 2;
             // 
             // listBoxFileData
@@ -69,7 +69,7 @@
             listBoxFileData.ItemHeight = 19;
             listBoxFileData.Location = new Point(33, 93);
             listBoxFileData.Name = "listBoxFileData";
-            listBoxFileData.Size = new Size(959, 289);
+            listBoxFileData.Size = new Size(1333, 289);
             listBoxFileData.TabIndex = 3;
             // 
             // dataGridViewStockData
@@ -78,7 +78,7 @@
             dataGridViewStockData.Location = new Point(33, 388);
             dataGridViewStockData.Name = "dataGridViewStockData";
             dataGridViewStockData.RowHeadersWidth = 51;
-            dataGridViewStockData.Size = new Size(959, 346);
+            dataGridViewStockData.Size = new Size(1333, 346);
             dataGridViewStockData.TabIndex = 4;
             // 
             // buttonExcel
@@ -95,7 +95,7 @@
             // 
             AutoScaleDimensions = new SizeF(9F, 19F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1057, 586);
+            ClientSize = new Size(1451, 586);
             Controls.Add(buttonExcel);
             Controls.Add(dataGridViewStockData);
             Controls.Add(listBoxFileData);

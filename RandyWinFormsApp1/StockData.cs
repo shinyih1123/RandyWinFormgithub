@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RandyWinFormsApp1
 {
-    internal class StockData
+    public class StockData
     {
         // 證券代號,證券名稱,成交股數,成交金額,開盤價,最高價,最低價,收盤價,漲跌價差,成交筆數
         public string ID { get; set; } = "";
