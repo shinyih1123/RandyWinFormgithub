@@ -446,6 +446,28 @@ namespace RandyWinFormsApp1
                     worksheet3.Cell(i + 2, 5).Value = topQ10[i].MarketValue;
                     worksheet3.Cell(i + 2, 6).Value = topQ10[i].Type;
                 }
+                //數量前10高物品
+                var worksheet4 = workbook.Worksheets.Add("物品類別總價值");
+                //var topType = items.OrderByDescending(p => int.Parse(p.Type)).Take(10).ToList();
+                // 按種類分組並計算總價值
+                var groupedItems = items
+                    .GroupBy(p => p.Type)
+                    .Select(g => new
+                    {
+                        Type = g.Key,
+                        TotalMarketValue = g.Sum(p => decimal.Parse(p.MarketValue)) // 計算同一種類的總價值
+                    })
+                    .OrderByDescending(g => g.TotalMarketValue) // 按總價值降序排序
+                    .Take(10) // 取前10個
+                    .ToList();
+                worksheet4.Cell(1, 1).Value = "種類";
+                worksheet4.Cell(1, 2).Value = "價值";
+
+                for (int i = 0; i < groupedItems.Count; i++)
+                {
+                    worksheet4.Cell(i + 2, 1).Value = groupedItems[i].Type;
+                    worksheet4.Cell(i + 2, 2).Value = groupedItems[i].TotalMarketValue;
+                }
                 //以種類group by產出
                 var groupByArea = items.GroupBy(p => p.Type);
                 foreach (var group in groupByArea)
