@@ -1,7 +1,9 @@
 ﻿using Dapper;
+using DocumentFormat.OpenXml.Spreadsheet;
 using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Windows.Forms;
 using static System.Windows.Forms.LinkLabel;
 
@@ -12,6 +14,7 @@ namespace RandyWinFormsApp1
     {
         public string ConnString { get; set; }
         private DataTable itemsDataTable = new DataTable();
+        private List<Items> itemsList = new List<Items>();
         public string Sqlstr = @"Server=localhost;Database=master;User Id=SYSADM;Password=SYSADM";
         private int[] ans = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };//正確答案
         private String[] gnum = new string[10];//猜的答案數字
@@ -147,6 +150,12 @@ namespace RandyWinFormsApp1
             conn.Open();
             items = conn.Query<Employee>("Select * From Items").ToList();
             dataGridView1.DataSource = items;
+            List<string> headerNames = ["項次", "名稱", "描述", "價值", "數量", "種類"];
+            // set datagridview header names to above
+            for (int i = 0; i < headerNames.Count; i++)
+            {
+                dataGridView1.Columns[i].HeaderText = headerNames[i];
+            }
 
             //itemsDataTable.Clear();
             //itemsDataTable.DefaultView.RowFilter = string.Empty;
@@ -382,6 +391,81 @@ namespace RandyWinFormsApp1
                 items = conn.Query<Employee>("Select * From Items").ToList();
                 dataGridView1.DataSource = items;
                 //Query();
+            }
+        }
+
+        private void buttonExcel_Click(object sender, EventArgs e)
+        {
+            List<string> headerNames = ["項次", "名稱", "描述", "價值", "數量", "種類"];
+            // set datagridview header names to above
+            for (int i = 0; i < headerNames.Count; i++)
+            {
+                dataGridView1.Columns[i].HeaderText = headerNames[i];
+            }
+            using (ClosedXML.Excel.XLWorkbook workbook = new ClosedXML.Excel.XLWorkbook())
+            {
+                var worksheet = workbook.Worksheets.Add("勇者物品");
+                for (int i = 0; i < headerNames.Count; i++)
+                {
+                    worksheet.Cell(1, i + 1).Value = headerNames[i];
+                }
+                worksheet.Cell(2, 1).InsertData(items);
+                //價值前10高物品
+                var worksheet2 = workbook.Worksheets.Add("價值前10高物品");
+                var top = items.OrderByDescending(p => int.Parse(p.MarketValue)).Take(10).ToList();
+                worksheet2.Cell(1, 1).Value = "項次";
+                worksheet2.Cell(1, 2).Value = "名稱";
+                worksheet2.Cell(1, 3).Value = "價值";
+                worksheet2.Cell(1, 4).Value = "描述";
+                worksheet2.Cell(1, 5).Value = "數量";
+                worksheet2.Cell(1, 6).Value = "種類";
+                for (int i = 0; i < top.Count; i++)
+                {
+                    worksheet2.Cell(i + 2, 1).Value = top[i].Id;
+                    worksheet2.Cell(i + 2, 2).Value = top[i].Name;
+                    worksheet2.Cell(i + 2, 3).Value = top[i].MarketValue;
+                    worksheet2.Cell(i + 2, 4).Value = top[i].Description;
+                    worksheet2.Cell(i + 2, 5).Value = top[i].Quantity;
+                    worksheet2.Cell(i + 2, 6).Value = top[i].Type;
+                }
+                //數量前10高物品
+                var worksheet3 = workbook.Worksheets.Add("數量前10高物品");
+                var topQ10 = items.OrderByDescending(p => int.Parse(p.Quantity)).Take(10).ToList();
+                worksheet3.Cell(1, 1).Value = "項次";
+                worksheet3.Cell(1, 2).Value = "名稱";
+                worksheet3.Cell(1, 3).Value = "數量";
+                worksheet3.Cell(1, 4).Value = "描述";
+                worksheet3.Cell(1, 5).Value = "價值";
+                worksheet3.Cell(1, 6).Value = "種類";
+                for (int i = 0; i < topQ10.Count; i++)
+                {
+                    worksheet3.Cell(i + 2, 1).Value = topQ10[i].Id;
+                    worksheet3.Cell(i + 2, 2).Value = topQ10[i].Name;
+                    worksheet3.Cell(i + 2, 3).Value = topQ10[i].Quantity;
+                    worksheet3.Cell(i + 2, 4).Value = topQ10[i].Description;
+                    worksheet3.Cell(i + 2, 5).Value = topQ10[i].MarketValue;
+                    worksheet3.Cell(i + 2, 6).Value = topQ10[i].Type;
+                }
+                //以種類group by產出
+                var groupByArea = items.GroupBy(p => p.Type);
+                foreach (var group in groupByArea)
+                {
+                    var worksheetByArea = workbook.Worksheets.Add(group.Key);
+                    var parkLotsByArea = group.ToList();
+                    for (int i = 0; i < headerNames.Count; i++)
+                    {
+                        worksheetByArea.Cell(1, i + 1).Value = headerNames[i];
+                    }
+                    worksheetByArea.Cell(2, 1).InsertData(parkLotsByArea);
+                }
+
+                workbook.SaveAs("勇者物品.xlsx");
+                ProcessStartInfo psi = new ProcessStartInfo()
+                {
+                    FileName = "勇者物品.xlsx",
+                    UseShellExecute = true,
+                };
+                System.Diagnostics.Process.Start(psi);
             }
         }
     }

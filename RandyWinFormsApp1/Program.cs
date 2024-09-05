@@ -12,7 +12,7 @@ namespace RandyWinFormsApp1
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
             //Application.Run(new FormFile());
-            Application.Run(new FormInternet());
+            Application.Run(new Form1());
         }
     }
 }

@@ -56,6 +56,7 @@ namespace RandyWinFormsApp1
             textBoxIndex = new TextBox();
             buttonDelete = new Button();
             tabPageGuessNumber = new TabPage();
+            buttonExcel = new Button();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             tabControl.SuspendLayout();
             tabPageBox.SuspendLayout();
@@ -186,7 +187,7 @@ namespace RandyWinFormsApp1
             dataGridView1.Name = "dataGridView1";
             dataGridView1.RowHeadersWidth = 51;
             dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dataGridView1.Size = new Size(885, 360);
+            dataGridView1.Size = new Size(993, 360);
             dataGridView1.TabIndex = 13;
             dataGridView1.CellClick += DataGridView1_CellDoubleClick;
             dataGridView1.CellContentClick += dataGridView1_CellContentClick;
@@ -218,11 +219,12 @@ namespace RandyWinFormsApp1
             tabControl.Location = new Point(12, 14);
             tabControl.Name = "tabControl";
             tabControl.SelectedIndex = 0;
-            tabControl.Size = new Size(923, 512);
+            tabControl.Size = new Size(1031, 512);
             tabControl.TabIndex = 16;
             // 
             // tabPageBox
             // 
+            tabPageBox.Controls.Add(buttonExcel);
             tabPageBox.Controls.Add(buttonUnLoadCSV);
             tabPageBox.Controls.Add(buttonLoadCSV);
             tabPageBox.Controls.Add(buttonInsert);
@@ -234,7 +236,7 @@ namespace RandyWinFormsApp1
             tabPageBox.Location = new Point(4, 28);
             tabPageBox.Name = "tabPageBox";
             tabPageBox.Padding = new Padding(3);
-            tabPageBox.Size = new Size(915, 480);
+            tabPageBox.Size = new Size(1023, 480);
             tabPageBox.TabIndex = 0;
             tabPageBox.Text = "勇者物品";
             tabPageBox.UseVisualStyleBackColor = true;
@@ -285,7 +287,7 @@ namespace RandyWinFormsApp1
             tableLayoutPanel1.RowCount = 2;
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 10.07371F));
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 89.92629F));
-            tableLayoutPanel1.Size = new Size(891, 407);
+            tableLayoutPanel1.Size = new Size(999, 407);
             tableLayoutPanel1.TabIndex = 18;
             // 
             // flowLayoutPanel1
@@ -294,7 +296,7 @@ namespace RandyWinFormsApp1
             flowLayoutPanel1.Controls.Add(textBoxIndex);
             flowLayoutPanel1.Location = new Point(3, 3);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Size = new Size(885, 35);
+            flowLayoutPanel1.Size = new Size(993, 35);
             flowLayoutPanel1.TabIndex = 19;
             // 
             // label2
@@ -347,6 +349,16 @@ namespace RandyWinFormsApp1
             tabPageGuessNumber.UseVisualStyleBackColor = true;
             tabPageGuessNumber.Click += tabPageGuessNumber_Click;
             // 
+            // buttonExcel
+            // 
+            buttonExcel.Location = new Point(845, 15);
+            buttonExcel.Name = "buttonExcel";
+            buttonExcel.Size = new Size(113, 46);
+            buttonExcel.TabIndex = 21;
+            buttonExcel.Text = "匯出EXCEL";
+            buttonExcel.UseVisualStyleBackColor = true;
+            buttonExcel.Click += buttonExcel_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(9F, 19F);
@@ -395,5 +407,6 @@ namespace RandyWinFormsApp1
         private Label label2;
         private Button buttonLoadCSV;
         private Button buttonUnLoadCSV;
+        private Button buttonExcel;
     }
 }
