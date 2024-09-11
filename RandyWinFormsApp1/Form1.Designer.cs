@@ -47,6 +47,7 @@ namespace RandyWinFormsApp1
             buttonUpdate = new Button();
             tabControl = new TabControl();
             tabPageBox = new TabPage();
+            buttonExcel = new Button();
             buttonUnLoadCSV = new Button();
             buttonLoadCSV = new Button();
             buttonInsert = new Button();
@@ -56,13 +57,21 @@ namespace RandyWinFormsApp1
             textBoxIndex = new TextBox();
             buttonDelete = new Button();
             tabPageGuessNumber = new TabPage();
-            buttonExcel = new Button();
+            tabPage1 = new TabPage();
+            cartesianChart1 = new LiveChartsCore.SkiaSharpView.WinForms.CartesianChart();
+            tabPage2 = new TabPage();
+            cartesianChart2 = new LiveChartsCore.SkiaSharpView.WinForms.CartesianChart();
+            tabPage3 = new TabPage();
+            pieChart1 = new LiveChartsCore.SkiaSharpView.WinForms.PieChart();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             tabControl.SuspendLayout();
             tabPageBox.SuspendLayout();
             tableLayoutPanel1.SuspendLayout();
             flowLayoutPanel1.SuspendLayout();
             tabPageGuessNumber.SuspendLayout();
+            tabPage1.SuspendLayout();
+            tabPage2.SuspendLayout();
+            tabPage3.SuspendLayout();
             SuspendLayout();
             // 
             // buttonNew
@@ -183,14 +192,13 @@ namespace RandyWinFormsApp1
             // dataGridView1
             // 
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Location = new Point(3, 44);
+            dataGridView1.Location = new Point(3, 48);
             dataGridView1.Name = "dataGridView1";
             dataGridView1.RowHeadersWidth = 51;
             dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dataGridView1.Size = new Size(993, 360);
+            dataGridView1.Size = new Size(993, 396);
             dataGridView1.TabIndex = 13;
-            dataGridView1.CellClick += DataGridView1_CellDoubleClick;
-            dataGridView1.CellContentClick += dataGridView1_CellContentClick;
+            dataGridView1.CellContentClick += DataGridView1_CellDoubleClick;
             // 
             // buttonSelect
             // 
@@ -216,10 +224,13 @@ namespace RandyWinFormsApp1
             // 
             tabControl.Controls.Add(tabPageBox);
             tabControl.Controls.Add(tabPageGuessNumber);
+            tabControl.Controls.Add(tabPage1);
+            tabControl.Controls.Add(tabPage2);
+            tabControl.Controls.Add(tabPage3);
             tabControl.Location = new Point(12, 14);
             tabControl.Name = "tabControl";
             tabControl.SelectedIndex = 0;
-            tabControl.Size = new Size(1031, 512);
+            tabControl.Size = new Size(1031, 555);
             tabControl.TabIndex = 16;
             // 
             // tabPageBox
@@ -236,10 +247,20 @@ namespace RandyWinFormsApp1
             tabPageBox.Location = new Point(4, 28);
             tabPageBox.Name = "tabPageBox";
             tabPageBox.Padding = new Padding(3);
-            tabPageBox.Size = new Size(1023, 480);
+            tabPageBox.Size = new Size(1023, 523);
             tabPageBox.TabIndex = 0;
             tabPageBox.Text = "勇者物品";
             tabPageBox.UseVisualStyleBackColor = true;
+            // 
+            // buttonExcel
+            // 
+            buttonExcel.Location = new Point(845, 15);
+            buttonExcel.Name = "buttonExcel";
+            buttonExcel.Size = new Size(113, 46);
+            buttonExcel.TabIndex = 21;
+            buttonExcel.Text = "匯出EXCEL";
+            buttonExcel.UseVisualStyleBackColor = true;
+            buttonExcel.Click += buttonExcel_Click;
             // 
             // buttonUnLoadCSV
             // 
@@ -287,7 +308,7 @@ namespace RandyWinFormsApp1
             tableLayoutPanel1.RowCount = 2;
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 10.07371F));
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 89.92629F));
-            tableLayoutPanel1.Size = new Size(999, 407);
+            tableLayoutPanel1.Size = new Size(999, 447);
             tableLayoutPanel1.TabIndex = 18;
             // 
             // flowLayoutPanel1
@@ -343,27 +364,77 @@ namespace RandyWinFormsApp1
             tabPageGuessNumber.Location = new Point(4, 28);
             tabPageGuessNumber.Name = "tabPageGuessNumber";
             tabPageGuessNumber.Padding = new Padding(3);
-            tabPageGuessNumber.Size = new Size(915, 480);
+            tabPageGuessNumber.Size = new Size(1023, 523);
             tabPageGuessNumber.TabIndex = 1;
             tabPageGuessNumber.Text = "猜數字";
             tabPageGuessNumber.UseVisualStyleBackColor = true;
             tabPageGuessNumber.Click += tabPageGuessNumber_Click;
             // 
-            // buttonExcel
+            // tabPage1
             // 
-            buttonExcel.Location = new Point(845, 15);
-            buttonExcel.Name = "buttonExcel";
-            buttonExcel.Size = new Size(113, 46);
-            buttonExcel.TabIndex = 21;
-            buttonExcel.Text = "匯出EXCEL";
-            buttonExcel.UseVisualStyleBackColor = true;
-            buttonExcel.Click += buttonExcel_Click;
+            tabPage1.Controls.Add(cartesianChart1);
+            tabPage1.Location = new Point(4, 28);
+            tabPage1.Name = "tabPage1";
+            tabPage1.Size = new Size(1023, 523);
+            tabPage1.TabIndex = 2;
+            tabPage1.Text = "折線圖";
+            tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // cartesianChart1
+            // 
+            cartesianChart1.Dock = DockStyle.Fill;
+            cartesianChart1.Location = new Point(0, 0);
+            cartesianChart1.Name = "cartesianChart1";
+            cartesianChart1.Size = new Size(1023, 523);
+            cartesianChart1.TabIndex = 0;
+            // 
+            // tabPage2
+            // 
+            tabPage2.Controls.Add(cartesianChart2);
+            tabPage2.Location = new Point(4, 28);
+            tabPage2.Name = "tabPage2";
+            tabPage2.Size = new Size(1023, 523);
+            tabPage2.TabIndex = 3;
+            tabPage2.Text = "直條圖";
+            tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // cartesianChart2
+            // 
+            cartesianChart2.Dock = DockStyle.Fill;
+            cartesianChart2.Location = new Point(0, 0);
+            cartesianChart2.Name = "cartesianChart2";
+            cartesianChart2.Size = new Size(1023, 523);
+            cartesianChart2.TabIndex = 0;
+            // 
+            // tabPage3
+            // 
+            tabPage3.Controls.Add(pieChart1);
+            tabPage3.Location = new Point(4, 28);
+            tabPage3.Name = "tabPage3";
+            tabPage3.Size = new Size(1023, 523);
+            tabPage3.TabIndex = 4;
+            tabPage3.Text = "圓餅圖";
+            tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // pieChart1
+            // 
+            pieChart1.Dock = DockStyle.Fill;
+            pieChart1.InitialRotation = 0D;
+            pieChart1.IsClockwise = true;
+            pieChart1.Location = new Point(0, 0);
+            pieChart1.MaxAngle = 360D;
+            pieChart1.MaxValue = null;
+            pieChart1.MinValue = 0D;
+            pieChart1.Name = "pieChart1";
+            pieChart1.Size = new Size(1023, 523);
+            pieChart1.TabIndex = 0;
+            pieChart1.Total = null;
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(9F, 19F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1055, 581);
+            ClientSize = new Size(1394, 581);
             Controls.Add(tabControl);
             Name = "Form1";
             Text = "勇者物品WinForms";
@@ -376,6 +447,9 @@ namespace RandyWinFormsApp1
             flowLayoutPanel1.PerformLayout();
             tabPageGuessNumber.ResumeLayout(false);
             tabPageGuessNumber.PerformLayout();
+            tabPage1.ResumeLayout(false);
+            tabPage2.ResumeLayout(false);
+            tabPage3.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -408,5 +482,11 @@ namespace RandyWinFormsApp1
         private Button buttonLoadCSV;
         private Button buttonUnLoadCSV;
         private Button buttonExcel;
+        private TabPage tabPage1;
+        private TabPage tabPage2;
+        private TabPage tabPage3;
+        private LiveChartsCore.SkiaSharpView.WinForms.CartesianChart cartesianChart1;
+        private LiveChartsCore.SkiaSharpView.WinForms.CartesianChart cartesianChart2;
+        private LiveChartsCore.SkiaSharpView.WinForms.PieChart pieChart1;
     }
 }

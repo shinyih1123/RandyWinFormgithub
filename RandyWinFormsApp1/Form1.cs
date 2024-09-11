@@ -1,11 +1,20 @@
-﻿using Dapper;
+﻿using ClosedXML.Excel;
+using Dapper;
 using DocumentFormat.OpenXml.Spreadsheet;
+using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore;
 using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Windows.Forms;
 using static System.Windows.Forms.LinkLabel;
+using LiveChartsCore.SkiaSharpView.Painting;
+using SkiaSharp;
+using LiveChartsCore.SkiaSharpView.VisualElements;
+using LiveChartsCore.SkiaSharpView.Painting.Effects;
+using System.Linq;
+using DocumentFormat.OpenXml.Drawing;
 
 namespace RandyWinFormsApp1
 {
@@ -192,7 +201,165 @@ namespace RandyWinFormsApp1
             //// read only
             //dataGridView1.ReadOnly = true;
             Query();
+            //折線圖
+            // 按種類分組並計算總價值
+            var groupedItems = items
+                .GroupBy(p => p.Type)
+                .Select(g => new
+                {
+                    Type = g.Key,
+                    TotalMarketValue = g.Sum(p => decimal.Parse(p.MarketValue)), // 計算同一種類的總價值
+                    TotalQualtity = g.Sum(p => decimal.Parse(p.Quantity)) // 計算同一種類的總價值
+                })
+                .OrderByDescending(g => g.TotalMarketValue) // 按總價值降序排序
+                .Take(10) // 取前10個
+                .ToList();
+            cartesianChart1.Series =
+                [
+                    new LineSeries<int>
+                    {
+                        Values = groupedItems.Select(t => ((int)t.TotalMarketValue)) // 用Select選取總價值
+                    },
+                ];
+            cartesianChart1.Title = new LabelVisual
+            {
+                Text = "勇者物品全種類價值",
+                TextSize = 25,
+                Padding = new LiveChartsCore.Drawing.Padding(15),
+                Paint = new SolidColorPaint(SKColors.DarkSlateGray)
+            };
+            //X軸
+            cartesianChart1.XAxes = new Axis[]
+                {
+                    new Axis
+                    {
+                        // Use the labels property to define named labels.
+                        Labels = groupedItems.Select(t => t.Type).ToList(),
+                        Name = "物品種類",
+                        NamePaint = new SolidColorPaint(SKColors.Black),
+                        LabelsPaint = new SolidColorPaint(SKColors.Blue),
+                        TextSize = 16,
+                        SeparatorsPaint = new SolidColorPaint(SKColors.LightSlateGray) { StrokeThickness = 2 }
+                    }
+                };
+            //Y軸
+            cartesianChart1.YAxes = new Axis[]
+               {
+                    new Axis
+                    {
+                        Name = "價值",
+                        NamePaint = new SolidColorPaint(SKColors.Red),
+                        LabelsPaint = new SolidColorPaint(SKColors.Green),
+                        TextSize = 20,
+                        SeparatorsPaint = new SolidColorPaint(SKColors.LightSlateGray)
+                        {
+                            StrokeThickness = 2,
+                            PathEffect = new DashEffect(new float[] { 3, 3 })
+                        }
+                    }
+               };
+            //直條圖
+            // 按種類分組並計算總價值
+            var top10ItemsQualtity = items
+                .GroupBy(p => p.Name)
+                .Select(g => new
+                {
+                    Name = g.Key,
+                    Quantity = g.Sum(p => decimal.Parse(p.Quantity)) // 計算同一種類的總價值
+                })
+                .OrderByDescending(g => g.Quantity) // 按總價值降序排序
+                .Take(15) // 取前15個
+                .ToList();
+            cartesianChart2.Series =
+                [
+                    // 設定直條圖物件 (值是int整數型態)
+                    new ColumnSeries<int>
+                    {
+                        Values = top10ItemsQualtity.Select(t => ((int)t.Quantity)).ToList(), // 選取停車格數量
+                    }
+                ];
+            //cartesianChart2.Series = new ISeries[]
+            //{
+            //    new ColumnSeries<double>
+            //    {
+            //        Values = new double[] { 2, 5, 4, 2, 4, 9, 5 }
+            //    }
+            //};
+            // 設定圖表上方的標題
+            cartesianChart2.Title = new LabelVisual
+            {
+                Text = "前15名數量最多的物品",
+                TextSize = 25,
+                Padding = new LiveChartsCore.Drawing.Padding(15),
+                Paint = new SolidColorPaint(SKColors.DarkSlateGray)
+            };
+            //X軸
+            cartesianChart2.XAxes = new Axis[]
+                {
+                    new Axis
+                    {
+                        // Use the labels property to define named labels.
+                        //Labels = totalSpacesByAreaName.Select(t => t.areaName).ToList(),
+                        //Labels = new string[] { "Anne", "Johnny", "Zac", "Rosa" },
+                        Labels = top10ItemsQualtity.Select(t => t.Name).ToList(),
+                        Name = "物品名稱",
+                        NamePaint = new SolidColorPaint(SKColors.Black),
+                        LabelsPaint = new SolidColorPaint(SKColors.Blue),
+                        TextSize = 16,
+                        SeparatorsPaint = new SolidColorPaint(SKColors.LightSlateGray) { StrokeThickness = 2 },
+                        LabelsRotation = 45
+                    }
+                };
+            //Y軸
+            cartesianChart2.YAxes = new Axis[]
+               {
+                    new Axis
+                    {
+                        Name = "數量",
+                        NamePaint = new SolidColorPaint(SKColors.Red),
+                        LabelsPaint = new SolidColorPaint(SKColors.Green),
+                        TextSize = 20,
+                        SeparatorsPaint = new SolidColorPaint(SKColors.LightSlateGray)
+                        {
+                            StrokeThickness = 2,
+                            PathEffect = new DashEffect(new float[] { 3, 3 })
+                        }
+                    }
+               };
+            //圓餅圖
+            // 計算總市場價值的總和
+            var totalMarketValue = groupedItems.Sum(t => t.TotalMarketValue);
+            // 產生圓餅圖: 先用物品價值大到小排序，再用Select選取種類名稱和價值
+            pieChart1.Series = groupedItems
+                .OrderByDescending(t => t.TotalMarketValue)
+                // 這裡每個Select都要建一個PieSeries物件
+                .Select(t => new PieSeries<int>
+                {
+                    // 這裡是圓餅圖的值，這裡是停車位數量
+                    Values = new List<int> { ((int)t.TotalMarketValue) },
+                    MaxRadialColumnWidth = 120,
+                    Name = t.Type,
+                    DataLabelsPaint = new SolidColorPaint(SKColors.Black),
+                    DataLabelsSize = 22,
+                    DataLabelsPosition = LiveChartsCore.Measure.PolarLabelsPosition.Middle,
+                    // 設定圓餅圖上的標籤格式=區域名稱: 停車場數量
+                    //DataLabelsFormatter = p => t.Type + ": " + t.TotalMarketValue +"("+ (t.TotalMarketValue / totalMarketValue * 100)+"%)"
+                    DataLabelsFormatter = p =>
+                    $"{t.Type}: {t.TotalMarketValue} ({(t.TotalMarketValue / totalMarketValue * 100):0.##}%)"
+                })
+                .ToList();
+
+            // 設定圖表上方的標題
+            pieChart1.Title = new LabelVisual
+            {
+                Text = "勇者物品全種類價值",
+                TextSize = 25,
+                Padding = new LiveChartsCore.Drawing.Padding(15),
+                Paint = new SolidColorPaint(SKColors.DarkSlateGray)
+            };
+
         }
+
 
         private void tabPageGuessNumber_Click(object sender, EventArgs e)
         {
@@ -235,7 +402,7 @@ namespace RandyWinFormsApp1
                 return;
             }
             //string id = dataGridView1.SelectedRows[0].Cells["id"].Value.ToString();
-            string Name = dataGridView1.SelectedRows[0].Cells["Name"].Value.ToString();
+            //string Name = dataGridView1.SelectedRows[0].Cells["Name"].Value.ToString();
             // 跳訊息確定是否要刪除
             //var result = MessageBox.Show("確定要刪除 編號" + id + " " + Name + "嗎?", "刪除物品", MessageBoxButtons.YesNo);
             // 如果選NO就結束
@@ -244,14 +411,15 @@ namespace RandyWinFormsApp1
             //    return;
             //}
             SqlConnection conn = new SqlConnection(Sqlstr);
-            //foreach (DataRow row in dataGridView1.SelectedRows)
-            //{
-            //    string id = dataGridView1.SelectedRows[0].Cells["id"].Value.ToString();
-            //    conn.Execute("Delete From items Where id = @id", new { id });
-            //}
+            foreach (DataGridViewRow row in dataGridView1.SelectedRows)
+            {
+                //string id = dataGridView1.SelectedRows[0].Cells["id"].Value.ToString();
+                string id = row.Cells["id"].Value.ToString();
+                conn.Execute("Delete From items Where id = @id", new { id });
+            }
             //SqlConnection conn = new SqlConnection(itemsService.ConnString);
-            string id = dataGridView1.SelectedRows[0].Cells["id"].Value.ToString();
-            conn.Execute("Delete From items Where id = @id", new { id });
+            //string id = dataGridView1.SelectedRows[0].Cells["id"].Value.ToString();
+            //conn.Execute("Delete From items Where id = @id", new { id });
             MessageBox.Show("刪除成功");
             items = conn.Query<Employee>("Select * From Items").ToList();
             dataGridView1.DataSource = items;
@@ -309,11 +477,6 @@ namespace RandyWinFormsApp1
             }
             FormUpdate formUpdate = new FormUpdate(employee);
             formUpdate.ShowDialog();
-        }
-
-        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
         }
 
         private void buttonUnLoadCSV_Click(object sender, EventArgs e)
@@ -448,7 +611,14 @@ namespace RandyWinFormsApp1
                 }
                 //數量前10高物品
                 var worksheet4 = workbook.Worksheets.Add("物品類別總價值");
+                // 設置工作表背景顏色為黃色
+                worksheet4.TabColor = XLColor.Yellow;
                 //var topType = items.OrderByDescending(p => int.Parse(p.Type)).Take(10).ToList();
+                // 設置表頭樣式，灰色背景和白色字體
+                var headerRange = worksheet4.Range(1, 1, 1, 2);
+                headerRange.Style.Fill.BackgroundColor = XLColor.Gray;
+                headerRange.Style.Font.FontColor = XLColor.White;
+                headerRange.Style.Font.Bold = true; // 可選，讓字體加粗
                 // 按種類分組並計算總價值
                 var groupedItems = items
                     .GroupBy(p => p.Type)
@@ -467,6 +637,7 @@ namespace RandyWinFormsApp1
                 {
                     worksheet4.Cell(i + 2, 1).Value = groupedItems[i].Type;
                     worksheet4.Cell(i + 2, 2).Value = groupedItems[i].TotalMarketValue;
+                    worksheet4.Cell(i + 2, 2).Style.Font.FontColor = XLColor.Red;
                 }
                 //以種類group by產出
                 var groupByArea = items.GroupBy(p => p.Type);
