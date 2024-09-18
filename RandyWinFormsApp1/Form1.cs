@@ -1,6 +1,7 @@
 ﻿using ClosedXML.Excel;
 using Dapper;
 using DocumentFormat.OpenXml.Spreadsheet;
+using DocumentFormat.OpenXml.ExtendedProperties;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore;
 using System.ComponentModel;
@@ -15,6 +16,9 @@ using LiveChartsCore.SkiaSharpView.VisualElements;
 using LiveChartsCore.SkiaSharpView.Painting.Effects;
 using System.Linq;
 using DocumentFormat.OpenXml.Drawing;
+using QuestPDF.Fluent;
+using QuestPDF.Helpers;
+
 
 namespace RandyWinFormsApp1
 {
@@ -335,7 +339,7 @@ namespace RandyWinFormsApp1
                 // 這裡每個Select都要建一個PieSeries物件
                 .Select(t => new PieSeries<int>
                 {
-                    // 這裡是圓餅圖的值，這裡是停車位數量
+                    // 這裡是圓餅圖的值，這裡是物品價值
                     Values = new List<int> { ((int)t.TotalMarketValue) },
                     MaxRadialColumnWidth = 120,
                     Name = t.Type,
@@ -357,6 +361,66 @@ namespace RandyWinFormsApp1
                 Padding = new LiveChartsCore.Drawing.Padding(15),
                 Paint = new SolidColorPaint(SKColors.DarkSlateGray)
             };
+            //圓餅圖II
+            pieChart2.Series = groupedItems
+                .OrderByDescending(t => t.TotalMarketValue)
+                // 這裡每個Select都要建一個PieSeries物件
+                .Select(t => new PieSeries<int>
+                {
+                    // 這裡是圓餅圖的值，這裡是物品價值
+                    Values = new List<int> { ((int)t.TotalMarketValue) },
+                    MaxRadialColumnWidth = 120,
+
+                    Name = t.Type,
+                    Stroke = null,
+                    Fill = new RadialGradientPaint(new SKColor(255, 205, 210), new SKColor(183, 218, 28)),
+                    //DataLabelsPaint = new SolidColorPaint(SKColors.Black),
+                    Pushout = 1,
+                    //DataLabelsPosition = LiveChartsCore.Measure.PolarLabelsPosition.Middle,
+                    // 設定圓餅圖上的標籤格式=區域名稱: 停車場數量
+                    //DataLabelsFormatter = p => t.Type + ": " + t.TotalMarketValue +"("+ (t.TotalMarketValue / totalMarketValue * 100)+"%)"
+                    DataLabelsFormatter = p =>
+                    $"{t.Type}: {t.TotalMarketValue} ({(t.TotalMarketValue / totalMarketValue * 100):0.##}%)"
+                })
+                .ToList();
+
+            //ISeries[] pieCharts2 =
+            // [
+            //   new PieSeries<int>
+            //    {
+            //        Name = "夏天",
+            //        Values = new[] { 3 }, // 值
+            //        Stroke = null,
+            //        Fill = new RadialGradientPaint(new SKColor(255, 205, 210), new SKColor(183, 28, 28)) // 漸層顏色變化(這裡可以塞很多顏色)
+            //    },
+            //   new PieSeries<int>
+            //    {
+            //        Name = "秋天",
+            //        Values = new[] { 4 },
+            //        Stroke = null,
+            //        Fill = new RadialGradientPaint([new SKColor(79, 229, 252)]),
+            //        Pushout = 10,
+            //        OuterRadiusOffset = 20
+            //    },
+            //   new PieSeries<int>
+            //    {
+            //        Name = "冬天",
+            //        Values = new[] { 7 },
+            //        Stroke = null,
+            //        Fill = new RadialGradientPaint([new SKColor(179, 229, 252)]),
+            //        Pushout = 10,
+            //        OuterRadiusOffset = 20
+            //    },
+            //];
+            //pieChart2.Series = pieCharts2;
+            pieChart2.Title = new LabelVisual
+            {
+                Text = "勇者物品全種類價值",
+                TextSize = 25,
+                Padding = new LiveChartsCore.Drawing.Padding(15),
+                Paint = new SolidColorPaint(SKColors.DarkSlateGray)
+            };
+
 
         }
 
@@ -660,6 +724,94 @@ namespace RandyWinFormsApp1
                 };
                 System.Diagnostics.Process.Start(psi);
             }
+        }
+
+        private void buttonPDF_Click(object sender, EventArgs e)
+        {
+            string Font = "Microsoft JhengHei";
+            Document.Create(container =>
+            {
+                container.Page(page =>
+                {
+                    //
+                    page.Header().
+                    Background(QuestPDF.Helpers.Colors.LightGreen.Lighten5).
+                    AlignCenter().
+                    Padding(1).Table(table =>
+                    {
+                        table.ColumnsDefinition(columns =>
+                        {
+                            columns.ConstantColumn(100);
+                            columns.RelativeColumn(3);
+                            columns.RelativeColumn(1);
+                        });
+                        table.Cell().AlignCenter().Text("勇者物品清單").FontFamily(Font).FontSize(16);
+                        table.Cell().AlignRight().Text("列印日期: " + DateTime.Now.ToString("yyyy/MM/dd")).FontFamily(Font);
+                    });
+                    
+                    page.Content().
+                    Background(QuestPDF.Helpers.Colors.Cyan.Lighten5).
+                    AlignCenter().
+                    Padding(16).Table(table =>
+                    {
+                        table.ColumnsDefinition(columns =>
+                        {
+                            //columns.ConstantColumn(1);
+                            columns.RelativeColumn(1);
+                            columns.RelativeColumn(2);
+                            columns.RelativeColumn(1);
+                            columns.RelativeColumn(1);
+                            columns.RelativeColumn(1);
+                        });
+                        table.Header(headers =>
+                        {
+                            table.Cell().BorderBottom(2).BorderBottom(2).BorderTop(2).AlignCenter().Text("名稱").FontFamily(Font); 
+                            table.Cell().BorderBottom(2).BorderTop(2).AlignCenter().Text("描述").FontFamily(Font);
+                            table.Cell().BorderBottom(2).BorderTop(2).AlignCenter().Text("價值").FontFamily(Font);
+                            table.Cell().BorderBottom(2).BorderTop(2).AlignCenter().Text("數量").FontFamily(Font);
+                            table.Cell().BorderBottom(2).BorderTop(2).AlignCenter().Text("數類").FontFamily(Font);
+                        });
+                        foreach (DataGridViewRow row in dataGridView1.Rows)
+                        {
+                            string Name = row.Cells[1].Value.ToString();
+                            string Description = row.Cells[2].Value.ToString();
+                            string MarketValueValue = row.Cells[3].Value.ToString();
+                            string Quantity = row.Cells[4].Value.ToString();
+                            string Type = row.Cells[5].Value.ToString();
+
+                            table.Cell().BorderBottom(1).AlignCenter().Text(Name).FontFamily(Font);
+                            table.Cell().BorderBottom(1).AlignLeft().Text(Description).FontFamily(Font);
+                            table.Cell().BorderBottom(1).AlignCenter().Text(MarketValueValue);
+                            table.Cell().BorderBottom(1).AlignCenter().Text(Quantity);
+                            table.Cell().BorderBottom(1).AlignCenter().Text(Type).FontFamily(Font);
+                        }
+                        //for (int i = 0; i < 200; i++)
+                        //{
+                        //    table.Cell().BorderBottom(1).AlignCenter().Text($"Item {i}");
+                        //}
+                    });
+ 
+                    page.Footer()
+                //.Background(Colors.Purple.Lighten3)
+                .Background(QuestPDF.Helpers.Colors.Red.Lighten5)
+                .AlignCenter()
+                //.Text("表尾")
+                .Text(text =>
+                        {
+                           text.CurrentPageNumber();
+                            text.Span(" / ");
+                            text.TotalPages();
+                        });
+                });
+
+            })
+            .GeneratePdf("d:\\勇者物品.pdf");
+
+            Process.Start(new ProcessStartInfo()
+            {
+                FileName = "d:\\勇者物品.pdf",
+                UseShellExecute = true
+            });
         }
     }
 }

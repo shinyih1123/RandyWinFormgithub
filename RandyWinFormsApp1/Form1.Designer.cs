@@ -63,6 +63,9 @@ namespace RandyWinFormsApp1
             cartesianChart2 = new LiveChartsCore.SkiaSharpView.WinForms.CartesianChart();
             tabPage3 = new TabPage();
             pieChart1 = new LiveChartsCore.SkiaSharpView.WinForms.PieChart();
+            tabPage4 = new TabPage();
+            pieChart2 = new LiveChartsCore.SkiaSharpView.WinForms.PieChart();
+            buttonPDF = new Button();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             tabControl.SuspendLayout();
             tabPageBox.SuspendLayout();
@@ -72,6 +75,7 @@ namespace RandyWinFormsApp1
             tabPage1.SuspendLayout();
             tabPage2.SuspendLayout();
             tabPage3.SuspendLayout();
+            tabPage4.SuspendLayout();
             SuspendLayout();
             // 
             // buttonNew
@@ -196,7 +200,7 @@ namespace RandyWinFormsApp1
             dataGridView1.Name = "dataGridView1";
             dataGridView1.RowHeadersWidth = 51;
             dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dataGridView1.Size = new Size(993, 396);
+            dataGridView1.Size = new Size(1047, 396);
             dataGridView1.TabIndex = 13;
             dataGridView1.CellContentClick += DataGridView1_CellDoubleClick;
             // 
@@ -227,14 +231,16 @@ namespace RandyWinFormsApp1
             tabControl.Controls.Add(tabPage1);
             tabControl.Controls.Add(tabPage2);
             tabControl.Controls.Add(tabPage3);
+            tabControl.Controls.Add(tabPage4);
             tabControl.Location = new Point(12, 14);
             tabControl.Name = "tabControl";
             tabControl.SelectedIndex = 0;
-            tabControl.Size = new Size(1031, 555);
+            tabControl.Size = new Size(1085, 555);
             tabControl.TabIndex = 16;
             // 
             // tabPageBox
             // 
+            tabPageBox.Controls.Add(buttonPDF);
             tabPageBox.Controls.Add(buttonExcel);
             tabPageBox.Controls.Add(buttonUnLoadCSV);
             tabPageBox.Controls.Add(buttonLoadCSV);
@@ -247,7 +253,7 @@ namespace RandyWinFormsApp1
             tabPageBox.Location = new Point(4, 28);
             tabPageBox.Name = "tabPageBox";
             tabPageBox.Padding = new Padding(3);
-            tabPageBox.Size = new Size(1023, 523);
+            tabPageBox.Size = new Size(1077, 523);
             tabPageBox.TabIndex = 0;
             tabPageBox.Text = "勇者物品";
             tabPageBox.UseVisualStyleBackColor = true;
@@ -308,7 +314,7 @@ namespace RandyWinFormsApp1
             tableLayoutPanel1.RowCount = 2;
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 10.07371F));
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 89.92629F));
-            tableLayoutPanel1.Size = new Size(999, 447);
+            tableLayoutPanel1.Size = new Size(1053, 447);
             tableLayoutPanel1.TabIndex = 18;
             // 
             // flowLayoutPanel1
@@ -317,7 +323,7 @@ namespace RandyWinFormsApp1
             flowLayoutPanel1.Controls.Add(textBoxIndex);
             flowLayoutPanel1.Location = new Point(3, 3);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Size = new Size(993, 35);
+            flowLayoutPanel1.Size = new Size(1047, 35);
             flowLayoutPanel1.TabIndex = 19;
             // 
             // label2
@@ -430,6 +436,40 @@ namespace RandyWinFormsApp1
             pieChart1.TabIndex = 0;
             pieChart1.Total = null;
             // 
+            // tabPage4
+            // 
+            tabPage4.Controls.Add(pieChart2);
+            tabPage4.Location = new Point(4, 28);
+            tabPage4.Name = "tabPage4";
+            tabPage4.Size = new Size(1023, 523);
+            tabPage4.TabIndex = 5;
+            tabPage4.Text = "圓餅圖II";
+            tabPage4.UseVisualStyleBackColor = true;
+            // 
+            // pieChart2
+            // 
+            pieChart2.Dock = DockStyle.Fill;
+            pieChart2.InitialRotation = 0D;
+            pieChart2.IsClockwise = true;
+            pieChart2.Location = new Point(0, 0);
+            pieChart2.MaxAngle = 360D;
+            pieChart2.MaxValue = null;
+            pieChart2.MinValue = 0D;
+            pieChart2.Name = "pieChart2";
+            pieChart2.Size = new Size(1023, 523);
+            pieChart2.TabIndex = 0;
+            pieChart2.Total = null;
+            // 
+            // buttonPDF
+            // 
+            buttonPDF.Location = new Point(961, 15);
+            buttonPDF.Name = "buttonPDF";
+            buttonPDF.Size = new Size(113, 46);
+            buttonPDF.TabIndex = 22;
+            buttonPDF.Text = "匯出PDF";
+            buttonPDF.UseVisualStyleBackColor = true;
+            buttonPDF.Click += buttonPDF_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(9F, 19F);
@@ -450,6 +490,7 @@ namespace RandyWinFormsApp1
             tabPage1.ResumeLayout(false);
             tabPage2.ResumeLayout(false);
             tabPage3.ResumeLayout(false);
+            tabPage4.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -488,5 +529,8 @@ namespace RandyWinFormsApp1
         private LiveChartsCore.SkiaSharpView.WinForms.CartesianChart cartesianChart1;
         private LiveChartsCore.SkiaSharpView.WinForms.CartesianChart cartesianChart2;
         private LiveChartsCore.SkiaSharpView.WinForms.PieChart pieChart1;
+        private TabPage tabPage4;
+        private LiveChartsCore.SkiaSharpView.WinForms.PieChart pieChart2;
+        private Button buttonPDF;
     }
 }
