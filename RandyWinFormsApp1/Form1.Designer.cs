@@ -46,7 +46,16 @@ namespace RandyWinFormsApp1
             buttonSelect = new Button();
             buttonUpdate = new Button();
             tabControl = new TabControl();
+            tabPage5 = new TabPage();
+            button2Excel2 = new Button();
+            dataGridViewCalendarExcel2 = new DataGridView();
+            dataGridViewCalendarExcel = new DataGridView();
+            button2Excel = new Button();
+            buttonJson = new Button();
+            textBoxCalendarURL = new TextBox();
+            label3 = new Label();
             tabPageBox = new TabPage();
+            buttonPDF = new Button();
             buttonExcel = new Button();
             buttonUnLoadCSV = new Button();
             buttonLoadCSV = new Button();
@@ -65,9 +74,11 @@ namespace RandyWinFormsApp1
             pieChart1 = new LiveChartsCore.SkiaSharpView.WinForms.PieChart();
             tabPage4 = new TabPage();
             pieChart2 = new LiveChartsCore.SkiaSharpView.WinForms.PieChart();
-            buttonPDF = new Button();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             tabControl.SuspendLayout();
+            tabPage5.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dataGridViewCalendarExcel2).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)dataGridViewCalendarExcel).BeginInit();
             tabPageBox.SuspendLayout();
             tableLayoutPanel1.SuspendLayout();
             flowLayoutPanel1.SuspendLayout();
@@ -226,6 +237,7 @@ namespace RandyWinFormsApp1
             // 
             // tabControl
             // 
+            tabControl.Controls.Add(tabPage5);
             tabControl.Controls.Add(tabPageBox);
             tabControl.Controls.Add(tabPageGuessNumber);
             tabControl.Controls.Add(tabPage1);
@@ -237,6 +249,91 @@ namespace RandyWinFormsApp1
             tabControl.SelectedIndex = 0;
             tabControl.Size = new Size(1085, 555);
             tabControl.TabIndex = 16;
+            // 
+            // tabPage5
+            // 
+            tabPage5.Controls.Add(button2Excel2);
+            tabPage5.Controls.Add(dataGridViewCalendarExcel2);
+            tabPage5.Controls.Add(dataGridViewCalendarExcel);
+            tabPage5.Controls.Add(button2Excel);
+            tabPage5.Controls.Add(buttonJson);
+            tabPage5.Controls.Add(textBoxCalendarURL);
+            tabPage5.Controls.Add(label3);
+            tabPage5.Location = new Point(4, 28);
+            tabPage5.Name = "tabPage5";
+            tabPage5.Size = new Size(1077, 523);
+            tabPage5.TabIndex = 6;
+            tabPage5.Text = "作業12";
+            tabPage5.UseVisualStyleBackColor = true;
+            // 
+            // button2Excel2
+            // 
+            button2Excel2.Font = new Font("Microsoft JhengHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 136);
+            button2Excel2.Location = new Point(804, 269);
+            button2Excel2.Name = "button2Excel2";
+            button2Excel2.Size = new Size(138, 37);
+            button2Excel2.TabIndex = 7;
+            button2Excel2.Text = "轉出EXCEL";
+            button2Excel2.UseVisualStyleBackColor = true;
+            button2Excel2.Click += button2Excel2_Click;
+            // 
+            // dataGridViewCalendarExcel2
+            // 
+            dataGridViewCalendarExcel2.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewCalendarExcel2.Location = new Point(18, 312);
+            dataGridViewCalendarExcel2.Name = "dataGridViewCalendarExcel2";
+            dataGridViewCalendarExcel2.RowHeadersWidth = 51;
+            dataGridViewCalendarExcel2.Size = new Size(924, 188);
+            dataGridViewCalendarExcel2.TabIndex = 6;
+            // 
+            // dataGridViewCalendarExcel
+            // 
+            dataGridViewCalendarExcel.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewCalendarExcel.Location = new Point(18, 51);
+            dataGridViewCalendarExcel.Name = "dataGridViewCalendarExcel";
+            dataGridViewCalendarExcel.RowHeadersWidth = 51;
+            dataGridViewCalendarExcel.Size = new Size(924, 212);
+            dataGridViewCalendarExcel.TabIndex = 5;
+            // 
+            // button2Excel
+            // 
+            button2Excel.Font = new Font("Microsoft JhengHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 136);
+            button2Excel.Location = new Point(804, 8);
+            button2Excel.Name = "button2Excel";
+            button2Excel.Size = new Size(138, 37);
+            button2Excel.TabIndex = 3;
+            button2Excel.Text = "轉出EXCEL";
+            button2Excel.UseVisualStyleBackColor = true;
+            button2Excel.Click += button2Excel_Click;
+            // 
+            // buttonJson
+            // 
+            buttonJson.Font = new Font("Microsoft JhengHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 136);
+            buttonJson.Location = new Point(658, 8);
+            buttonJson.Name = "buttonJson";
+            buttonJson.Size = new Size(140, 37);
+            buttonJson.TabIndex = 2;
+            buttonJson.Text = "轉入JSON";
+            buttonJson.UseVisualStyleBackColor = true;
+            buttonJson.Click += buttonJson_Click;
+            // 
+            // textBoxCalendarURL
+            // 
+            textBoxCalendarURL.Location = new Point(79, 14);
+            textBoxCalendarURL.Name = "textBoxCalendarURL";
+            textBoxCalendarURL.Size = new Size(573, 27);
+            textBoxCalendarURL.TabIndex = 1;
+            textBoxCalendarURL.Text = "https://cdn.jsdelivr.net/gh/ruyut/TaiwanCalendar/data/2025.json";
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Font = new Font("Microsoft JhengHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 136);
+            label3.Location = new Point(18, 16);
+            label3.Name = "label3";
+            label3.Size = new Size(70, 25);
+            label3.TabIndex = 0;
+            label3.Text = "URL：";
             // 
             // tabPageBox
             // 
@@ -257,6 +354,16 @@ namespace RandyWinFormsApp1
             tabPageBox.TabIndex = 0;
             tabPageBox.Text = "勇者物品";
             tabPageBox.UseVisualStyleBackColor = true;
+            // 
+            // buttonPDF
+            // 
+            buttonPDF.Location = new Point(961, 15);
+            buttonPDF.Name = "buttonPDF";
+            buttonPDF.Size = new Size(113, 46);
+            buttonPDF.TabIndex = 22;
+            buttonPDF.Text = "匯出PDF";
+            buttonPDF.UseVisualStyleBackColor = true;
+            buttonPDF.Click += buttonPDF_Click;
             // 
             // buttonExcel
             // 
@@ -370,7 +477,7 @@ namespace RandyWinFormsApp1
             tabPageGuessNumber.Location = new Point(4, 28);
             tabPageGuessNumber.Name = "tabPageGuessNumber";
             tabPageGuessNumber.Padding = new Padding(3);
-            tabPageGuessNumber.Size = new Size(1023, 523);
+            tabPageGuessNumber.Size = new Size(1077, 523);
             tabPageGuessNumber.TabIndex = 1;
             tabPageGuessNumber.Text = "猜數字";
             tabPageGuessNumber.UseVisualStyleBackColor = true;
@@ -381,7 +488,7 @@ namespace RandyWinFormsApp1
             tabPage1.Controls.Add(cartesianChart1);
             tabPage1.Location = new Point(4, 28);
             tabPage1.Name = "tabPage1";
-            tabPage1.Size = new Size(1023, 523);
+            tabPage1.Size = new Size(1077, 523);
             tabPage1.TabIndex = 2;
             tabPage1.Text = "折線圖";
             tabPage1.UseVisualStyleBackColor = true;
@@ -391,7 +498,7 @@ namespace RandyWinFormsApp1
             cartesianChart1.Dock = DockStyle.Fill;
             cartesianChart1.Location = new Point(0, 0);
             cartesianChart1.Name = "cartesianChart1";
-            cartesianChart1.Size = new Size(1023, 523);
+            cartesianChart1.Size = new Size(1077, 523);
             cartesianChart1.TabIndex = 0;
             // 
             // tabPage2
@@ -399,7 +506,7 @@ namespace RandyWinFormsApp1
             tabPage2.Controls.Add(cartesianChart2);
             tabPage2.Location = new Point(4, 28);
             tabPage2.Name = "tabPage2";
-            tabPage2.Size = new Size(1023, 523);
+            tabPage2.Size = new Size(1077, 523);
             tabPage2.TabIndex = 3;
             tabPage2.Text = "直條圖";
             tabPage2.UseVisualStyleBackColor = true;
@@ -409,7 +516,7 @@ namespace RandyWinFormsApp1
             cartesianChart2.Dock = DockStyle.Fill;
             cartesianChart2.Location = new Point(0, 0);
             cartesianChart2.Name = "cartesianChart2";
-            cartesianChart2.Size = new Size(1023, 523);
+            cartesianChart2.Size = new Size(1077, 523);
             cartesianChart2.TabIndex = 0;
             // 
             // tabPage3
@@ -417,7 +524,7 @@ namespace RandyWinFormsApp1
             tabPage3.Controls.Add(pieChart1);
             tabPage3.Location = new Point(4, 28);
             tabPage3.Name = "tabPage3";
-            tabPage3.Size = new Size(1023, 523);
+            tabPage3.Size = new Size(1077, 523);
             tabPage3.TabIndex = 4;
             tabPage3.Text = "圓餅圖";
             tabPage3.UseVisualStyleBackColor = true;
@@ -432,7 +539,7 @@ namespace RandyWinFormsApp1
             pieChart1.MaxValue = null;
             pieChart1.MinValue = 0D;
             pieChart1.Name = "pieChart1";
-            pieChart1.Size = new Size(1023, 523);
+            pieChart1.Size = new Size(1077, 523);
             pieChart1.TabIndex = 0;
             pieChart1.Total = null;
             // 
@@ -441,7 +548,7 @@ namespace RandyWinFormsApp1
             tabPage4.Controls.Add(pieChart2);
             tabPage4.Location = new Point(4, 28);
             tabPage4.Name = "tabPage4";
-            tabPage4.Size = new Size(1023, 523);
+            tabPage4.Size = new Size(1077, 523);
             tabPage4.TabIndex = 5;
             tabPage4.Text = "圓餅圖II";
             tabPage4.UseVisualStyleBackColor = true;
@@ -456,19 +563,9 @@ namespace RandyWinFormsApp1
             pieChart2.MaxValue = null;
             pieChart2.MinValue = 0D;
             pieChart2.Name = "pieChart2";
-            pieChart2.Size = new Size(1023, 523);
+            pieChart2.Size = new Size(1077, 523);
             pieChart2.TabIndex = 0;
             pieChart2.Total = null;
-            // 
-            // buttonPDF
-            // 
-            buttonPDF.Location = new Point(961, 15);
-            buttonPDF.Name = "buttonPDF";
-            buttonPDF.Size = new Size(113, 46);
-            buttonPDF.TabIndex = 22;
-            buttonPDF.Text = "匯出PDF";
-            buttonPDF.UseVisualStyleBackColor = true;
-            buttonPDF.Click += buttonPDF_Click;
             // 
             // Form1
             // 
@@ -481,6 +578,10 @@ namespace RandyWinFormsApp1
             WindowState = FormWindowState.Maximized;
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             tabControl.ResumeLayout(false);
+            tabPage5.ResumeLayout(false);
+            tabPage5.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)dataGridViewCalendarExcel2).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dataGridViewCalendarExcel).EndInit();
             tabPageBox.ResumeLayout(false);
             tableLayoutPanel1.ResumeLayout(false);
             flowLayoutPanel1.ResumeLayout(false);
@@ -532,5 +633,13 @@ namespace RandyWinFormsApp1
         private TabPage tabPage4;
         private LiveChartsCore.SkiaSharpView.WinForms.PieChart pieChart2;
         private Button buttonPDF;
+        private TabPage tabPage5;
+        private Label label3;
+        private Button button2Excel;
+        private Button buttonJson;
+        private TextBox textBoxCalendarURL;
+        private DataGridView dataGridViewCalendarExcel;
+        private Button button2Excel2;
+        private DataGridView dataGridViewCalendarExcel2;
     }
 }

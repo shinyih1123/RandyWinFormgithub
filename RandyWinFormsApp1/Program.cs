@@ -25,7 +25,8 @@ namespace RandyWinFormsApp1
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
             //Application.Run(new FormFile());
-            Application.Run(new FormMethods());
+            Application.Run(new Form1());
+            //Application.Run(new FormMail());
         }
     }
 }

@@ -18,6 +18,11 @@ using System.Linq;
 using DocumentFormat.OpenXml.Drawing;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
+using static System.Net.WebRequestMethods;
+using System.Text.Json;
+using RandyWinFormsApp1.DataModels;
+using System.Globalization;
+
 
 
 namespace RandyWinFormsApp1
@@ -34,6 +39,7 @@ namespace RandyWinFormsApp1
         private int tmp, r, time;
         private Random ran = new Random();
         List<Employee> items = new List<Employee>();
+        //public List<CalendarData> CalendarDatas { get; set; } = new List<CalendarData>();
         public Form1()
         {
             InitializeComponent();
@@ -564,7 +570,7 @@ namespace RandyWinFormsApp1
                     lines.Add(singleLineData);
                 }
                 // 把剛剛匯入的資料寫道指定檔案中
-                File.WriteAllLines(filePath, lines);
+                System.IO.File.WriteAllLines(filePath, lines);
                 MessageBox.Show("儲存到" + filePath + "了!");
             }
         }
@@ -580,7 +586,7 @@ namespace RandyWinFormsApp1
                 // 顯示剛抓檔案的名稱
                 //labelFileName.Text = OpenFileDialog.FileName;
                 // 讀取檔案的內容 (讀取的每一行塞到data字串陣列string[]) 950 	big5
-                string[] lines = File.ReadAllLines(OpenFileDialog.FileName);
+                string[] lines = System.IO.File.ReadAllLines(OpenFileDialog.FileName);
                 // 先清空listbox的items
                 //listBoxCSV.Items.Clear();
                 //foreach (var item in lines)
@@ -748,7 +754,7 @@ namespace RandyWinFormsApp1
                         table.Cell().AlignCenter().Text("勇者物品清單").FontFamily(Font).FontSize(16);
                         table.Cell().AlignRight().Text("列印日期: " + DateTime.Now.ToString("yyyy/MM/dd")).FontFamily(Font);
                     });
-                    
+
                     page.Content().
                     Background(QuestPDF.Helpers.Colors.Cyan.Lighten5).
                     AlignCenter().
@@ -765,7 +771,7 @@ namespace RandyWinFormsApp1
                         });
                         table.Header(headers =>
                         {
-                            table.Cell().BorderBottom(2).BorderBottom(2).BorderTop(2).AlignCenter().Text("名稱").FontFamily(Font); 
+                            table.Cell().BorderBottom(2).BorderBottom(2).BorderTop(2).AlignCenter().Text("名稱").FontFamily(Font);
                             table.Cell().BorderBottom(2).BorderTop(2).AlignCenter().Text("描述").FontFamily(Font);
                             table.Cell().BorderBottom(2).BorderTop(2).AlignCenter().Text("價值").FontFamily(Font);
                             table.Cell().BorderBottom(2).BorderTop(2).AlignCenter().Text("數量").FontFamily(Font);
@@ -790,7 +796,7 @@ namespace RandyWinFormsApp1
                         //    table.Cell().BorderBottom(1).AlignCenter().Text($"Item {i}");
                         //}
                     });
- 
+
                     page.Footer()
                 //.Background(Colors.Purple.Lighten3)
                 .Background(QuestPDF.Helpers.Colors.Red.Lighten5)
@@ -798,7 +804,7 @@ namespace RandyWinFormsApp1
                 //.Text("表尾")
                 .Text(text =>
                         {
-                           text.CurrentPageNumber();
+                            text.CurrentPageNumber();
                             text.Span(" / ");
                             text.TotalPages();
                         });
@@ -812,6 +818,228 @@ namespace RandyWinFormsApp1
                 FileName = "d:\\勇者物品.pdf",
                 UseShellExecute = true
             });
+        }
+
+        private void button2Excel_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // 建立一個新的 Excel 工作簿
+                using (var workbook = new XLWorkbook())
+                {
+                    // 新增工作表
+                    var worksheet = workbook.Worksheets.Add("Sheet1");
+
+                    // 添加 DataGridView 的標題
+                    for (int i = 0; i < dataGridViewCalendarExcel.Columns.Count; i++)
+                    {
+                        worksheet.Cell(1, i + 1).Value = dataGridViewCalendarExcel.Columns[i].HeaderText;
+                    }
+
+                    // 填入 DataGridView 的資料
+                    for (int i = 0; i < dataGridViewCalendarExcel.Rows.Count; i++)
+                    {
+                        for (int j = 0; j < dataGridViewCalendarExcel.Columns.Count; j++)
+                        {
+                            worksheet.Cell(i + 2, j + 1).Value = dataGridViewCalendarExcel.Rows[i].Cells[j].Value?.ToString() ?? "";
+                        }
+                    }
+
+                    // 儲存 Excel 檔案
+                    workbook.SaveAs("D:\\Calendar2023.xlsx");
+                }
+
+                MessageBox.Show("資料已成功匯出到 Excel 檔案！");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("發生錯誤：" + ex.Message);
+            }
+        }
+
+        private void buttonJson_Click(object sender, EventArgs e)
+        {
+            string url = textBoxCalendarURL.Text;
+            string lastChars = url.Length >= 9 ? url.Substring(url.Length - 9) : url;
+
+
+            using (HttpClient client = new HttpClient())
+            {
+                try
+                {
+                    // 從指定的 URL 取得 JSON 字串
+                    var result = client.GetStringAsync(url).Result;
+
+                    // 反序列化 JSON 字串為 List<CalendarLot>
+                    List<DataModels.Calendar> calendarLots =
+                        JsonSerializer.Deserialize<List<DataModels.Calendar>>(result) ?? new List<DataModels.Calendar>();
+                    // 設定資料來源
+                    dataGridViewCalendarExcel.DataSource = calendarLots;
+
+                    // 設定 DataGridView 的欄位名稱
+                    List<string> headerNames = new List<string> { "日期", "星期", "是否為假日", "描述" };
+
+                    // 確認 DataGridView 的欄位數量大於等於 headerNames 的數量
+                    if (dataGridViewCalendarExcel.Columns.Count >= headerNames.Count)
+                    {
+                        for (int i = 0; i < headerNames.Count; i++)
+                        {
+                            //MessageBox.Show("for i：" + headerNames.Count);
+                            dataGridViewCalendarExcel.Columns[i].HeaderText = headerNames[i];
+                        }
+                    }
+                    // 反序列化 JSON 字串為 List<CalendarLot>
+                    List<DataModels.Calendar2> calendarLots2 =
+                        JsonSerializer.Deserialize<List<DataModels.Calendar2>>(result) ?? new List<DataModels.Calendar2>();
+
+                    // 篩選 IsHoliday 為 true 的資料
+                    var filteredLots = calendarLots2.Where(lot => lot.IsHoliday).ToList();
+                    // 計算每個日期的星期幾並設定 HolidayType
+                    foreach (var lot in filteredLots)
+                    {
+                        if (DateTime.TryParseExact(lot.Date, "yyyyMMdd", null, System.Globalization.DateTimeStyles.None, out DateTime date))
+                        {
+                            // 轉換日期格式為 mm/dd/yyyy
+                            lot.Date = date.ToString("MM/dd/yyyy");
+                            // 判斷星期六或星期日並設定 HolidayType
+                            if (!string.IsNullOrEmpty(lot.Description))
+                            {
+                                // Manually set "20250127" and "20250531" as "休息日"
+                                if (lot.Date == "01/27/2025" || lot.Date == "05/31/2025")
+                                {
+                                    lot.HolidayType = "休息日";
+                                }
+                                else 
+                                {
+                                    lot.HolidayType = "國定假日"; // 
+                                }
+                                
+                            }
+                            else 
+                            {
+                                
+                                if (date.DayOfWeek == DayOfWeek.Saturday)
+                                {
+                                    lot.HolidayType = "休息日";
+                                    
+                                }
+                                else if (date.DayOfWeek == DayOfWeek.Sunday)
+                                {
+                                    lot.HolidayType = "例假日";
+                                }
+                            }
+                            
+                            // 設定 IsHoliday 為 "是" 或 "否"
+                            //lot.IsHoliday = lot.IsHoliday ? "是" : "否";
+                            lot.Chinese = lot.Description;
+                            lot.Description = string.Empty;
+                        }
+                        else
+                        {
+
+                            lot.HolidayType = "未知";
+                            lot.Chinese = string.Empty;
+                            lot.Description = string.Empty;
+                            //lot.IsHoliday = "否";
+                        }
+                    }
+
+                    // 設定 DataGridView 的資料來源
+                    dataGridViewCalendarExcel2.DataSource = filteredLots;
+
+                    // 設定 DataGridView 的欄位名稱
+                    List<string> headerNames2 = new List<string> { "Date", "Chinese", "isHoliday", "Holiday Category", "Description", "休息日例假日", "星期" };
+
+                    // 確認 DataGridView 的欄位數量大於等於 headerNames 的數量
+                    if (dataGridViewCalendarExcel2.Columns.Count >= headerNames2.Count)
+                    {
+                        for (int i = 0; i < headerNames2.Count; i++)
+                        {
+                            dataGridViewCalendarExcel2.Columns[i].HeaderText = headerNames2[i];
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("發生錯誤：" + ex.Message);
+                }
+            }
+        }
+
+        private void button2Excel2_Click(object sender, EventArgs e)
+        {
+            string fileName = "";
+            try
+            {
+                // 建立一個新的 Excel 工作簿
+                using (var workbook = new XLWorkbook())
+                {
+                    // 新增工作表
+                    var worksheet = workbook.Worksheets.Add("Sheet1");
+
+                    // 添加 DataGridView 的標題
+                    for (int i = 0; i < dataGridViewCalendarExcel2.Columns.Count; i++)
+                    {
+                        //worksheet.Cell(1, i + 1).Value = dataGridViewCalendarExcel2.Columns[i].HeaderText;
+                        var headerCell = worksheet.Cell(1, i + 1);
+                        headerCell.Value = dataGridViewCalendarExcel2.Columns[i].HeaderText;
+                        // Set background color to blue and make text bold
+                        headerCell.Style.Fill.BackgroundColor = XLColor.LightSkyBlue;
+                        headerCell.Style.Font.Bold = true;
+                        headerCell.Style.Font.FontColor = XLColor.Black;
+                        // Set the "Date" header's font color to red
+                        if (i == 0) // First column is "Date"
+                        {
+                            headerCell.Style.Font.FontColor = XLColor.Red;
+                        }
+                    }
+
+                    // 填入 DataGridView 的資料
+                    for (int i = 0; i < dataGridViewCalendarExcel2.Rows.Count; i++)
+                    {
+                        for (int j = 0; j < dataGridViewCalendarExcel2.Columns.Count; j++)
+                        {
+                            //worksheet.Cell(i + 2, j + 1).Value = dataGridViewCalendarExcel2.Rows[i].Cells[j].Value?.ToString() ?? "";
+                            var dataCell = worksheet.Cell(i + 2, j + 1);
+                            var cellValue = dataGridViewCalendarExcel2.Rows[i].Cells[j].Value?.ToString() ?? "";
+
+                            // If the column is "Date", set the cell as a date type
+                            if (j == 0 && DateTime.TryParse(cellValue, out DateTime dateValue))
+                            {
+                                dataCell.Value = dateValue;
+                                dataCell.Style.DateFormat.Format = "M/d/yyyy"; // Set date format
+                                                                               // Align content to the right
+                                dataCell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
+                            }
+                            else if (j == 2) // Assuming the "isHoliday" column is the third column (index 2)
+                            {
+                                // Display "是" if isHoliday is true
+                                dataCell.Value = cellValue.ToLower() == "true" ? "是" : "否";
+                            }
+                            else
+                            {
+                                dataCell.Value = cellValue;
+                            }
+
+                            
+                        }
+                    }
+
+                    // 儲存 Excel 檔案
+                    string url = textBoxCalendarURL.Text;
+                    string lastChars = url.Length >= 9 ? url.Substring(url.Length - 9) : url;
+                    string lastChars2 = lastChars.Length >= 4 ? lastChars.Substring(0, 4) : lastChars;
+                    fileName = "D:\\Calendar" + lastChars2 + ".xlsx";
+                    //workbook.SaveAs("D:\\Calendar"+ lastChars2 + ".xlsx");
+                    workbook.SaveAs(fileName);
+                }
+
+                MessageBox.Show("資料已成功匯出到 Excel 檔案！,檔案路徑："+ fileName);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("發生錯誤：" + ex.Message);
+            }
         }
     }
 }
