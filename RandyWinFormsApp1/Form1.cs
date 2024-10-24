@@ -822,6 +822,7 @@ namespace RandyWinFormsApp1
 
         private void button2Excel_Click(object sender, EventArgs e)
         {
+            string fileName = "";
             try
             {
                 // 建立一個新的 Excel 工作簿
@@ -844,12 +845,17 @@ namespace RandyWinFormsApp1
                             worksheet.Cell(i + 2, j + 1).Value = dataGridViewCalendarExcel.Rows[i].Cells[j].Value?.ToString() ?? "";
                         }
                     }
-
+                    string url = textBoxCalendarURL.Text;
+                    string lastChars = url.Length >= 9 ? url.Substring(url.Length - 9) : url;
+                    string lastChars2 = lastChars.Length >= 4 ? lastChars.Substring(0, 4) : lastChars;
+                    fileName = "D:\\Calendar_O_" + lastChars2 + ".xlsx";
+                    //workbook.SaveAs("D:\\Calendar"+ lastChars2 + ".xlsx");
+                    workbook.SaveAs(fileName);
                     // 儲存 Excel 檔案
-                    workbook.SaveAs("D:\\Calendar2023.xlsx");
+                    //workbook.SaveAs("D:\\Calendar2023.xlsx");
                 }
 
-                MessageBox.Show("資料已成功匯出到 Excel 檔案！");
+                MessageBox.Show("資料已成功匯出到 Excel 檔案！,檔案路徑：" + fileName);
             }
             catch (Exception ex)
             {
@@ -1024,7 +1030,8 @@ namespace RandyWinFormsApp1
                             
                         }
                     }
-
+                    // Set the "Date" column width
+                    worksheet.Column(1).Width = 12; // Adjust the width as needed
                     // 儲存 Excel 檔案
                     string url = textBoxCalendarURL.Text;
                     string lastChars = url.Length >= 9 ? url.Substring(url.Length - 9) : url;
